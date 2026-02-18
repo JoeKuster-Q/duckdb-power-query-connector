@@ -9,7 +9,7 @@ This is the Power Query Custom Connector for DuckDB. Use this to connect to a Du
 
 ## Installing
 
-1. Download the latest [DuckDB ODBC driver for Windows (x86_64/AMD64)](https://github.com/duckdb/duckdb-odbc/releases/latest/download/duckdb_odbc-windows-amd64.zip). 
+1. Download the latest [DuckDB ODBC driver for Windows (x86_64/AMD64)](https://github.com/duckdb/duckdb-odbc/releases/download/v1.4.4.0/duckdb_odbc-windows-amd64.zip).
    See [the releases page](https://github.com/duckdb/duckdb-odbc/releases) for other versions and architectures.
    For more information about the Windows ODBC Driver, see the [DuckDB Docs page on DuckDB ODBC API on Windows](https://duckdb.org/docs/stable/clients/odbc/windows).
 2. Extract the `.zip` archive. Run `odbc_install.exe` - if Windows displays a security warning, click "More information" then "Run Anyway".
@@ -21,9 +21,9 @@ This is the Power Query Custom Connector for DuckDB. Use this to connect to a Du
 4. Configure Power BI security settings to allow loading of custom extensions:
    - Go to File -> Options and settings -> Options -> Security -> Data Extensions
    - Enable "Allow any extensions to load without validation or warning"
-   - ![Dialog window showing Power BI Options -> Security -> Data Extensions](images/power_bi_options.png)
+   - ![Dialog window showing Power BI Options -> Security -> Data Extensions](./images/PowerBI-data-extensions.png)
 5. Download the latest version of the DuckDB Power Query extension:
-   - [duckdb-power-query-connector.mez](https://github.com/MotherDuck-Open-Source/duckdb-power-query-connector/releases/latest/download/duckdb-power-query-connector.mez)
+      - [duckdb-power-query-connector.mez](https://github.com/motherduckdb/duckdb-power-query-connector/releases/latest/download/duckdb-power-query-connector.mez)
 6. Create the Custom Connectors directory if it does not yet exist:
    - Navigate to `[Documents]\Power BI Desktop\Custom Connectors`
    - Create this folder, if it doesn't exist
@@ -32,23 +32,28 @@ This is the Power Query Custom Connector for DuckDB. Use this to connect to a Du
 8. Restart Power BI Desktop
 
 
+
 ## How to use with Power BI
 
 1. In Power BI Desktop, click "Get Data" -> "More..."
+![Select a Data Source](./images/PowerBI-get-data.png)
 2. Search for "DuckDB" in the connector search box and select the DuckDB connector
-   ![Find DuckDB connector](images/find-connector.png)
+![Find DuckDB connector](./images/PowerBI-Select-source-duckdb.png)
 3. For MotherDuck connections, you'll need to provide:
-   - Database Location: Use the `md:` prefix followed by your database name (e.g., `md:my_database`). This can also be a local file path (e.g., `~\my_database.db`)
-   - MotherDuck Token: Get your token from [MotherDuck's token page](https://motherduck.com/docs/key-tasks/authenticating-and-connecting-to-motherduck/authenticating-to-motherduck/#creating-an-access-token)
-   - Read Only (Optional): Set to `true` if you only need read access
-     ![Connect to your MotherDuck database](images/connect-duckdb.png)
+   - Database Location: Use the `md:` prefix followed by your database name (e.g., `md:my_database`). This can also be a local file path (e.g., `~\my_database.db`) or an in-memory database (`:memory:`).
+   - MotherDuck Token: Get your token from [MotherDuck's token page](https://motherduck.com/docs/key-tasks/authenticating-and-connecting-to-motherduck/authenticating-to-motherduck/#creating-an-access-token).
+      *For local DuckDB connections:* Enter "localtoken" to enable the connection.
+      ![Connect to Database](./images/PowerBI-duckdb-database.png)
+   - Read Only (Optional): Set to `true` if you only need read access.
+   - Saas_mode (Optional): Set to `true` to disable [DuckDB extensions](https://motherduck.com/docs/concepts/duckdb-extensions).
+   - Attach_mode (Optional): Leave blank if you are connecting to a single database/
 4. Click "OK".
 5. Click "Connect".
-   ![Connect dialog](images/connect.png)
+   ![Connect to your MotherDuck database](./images/PowerBI-DuckDB-connect.png)
 6. Select the table(s) you want to import. Click "Load".
-   ![Navigator dialog to preview and select your table(s)](images/navigator.png)
+![Navigator dialog to preview and select your table(s)](./images/PowerBI-data-selection.png)
 7. You can now query your data and create visualizations!
-   ![Power BI example usage](images/power-bi-example.png)
+![Power BI example usage](./images/PowerBI-example-graph.png)
 8. After connecting, you can:
    - Browse and select tables from your MotherDuck or DuckDB database
    - Use "Transform Data" to modify your queries before loading
@@ -59,6 +64,7 @@ This is the Power Query Custom Connector for DuckDB. Use this to connect to a Du
    - Create relationships between tables
    - Build visualizations and dashboards
    - Share reports with other users (requires proper gateway setup)
+
 
 
 ## Turning on UTF-8 support in the Language & Region settings
@@ -73,14 +79,14 @@ UTF-8 is currently not supported in the DuckDB ODBC driver. As a workaround, you
 3. Click on "Change system locale"
 4. Check the "Beta: Use Unicode UTF-8 for worldwide language support" and click OK
 
-![Screenshot 2024-05-03 165950](https://github.com/MotherDuck-Open-Source/duckdb-power-query-connector/assets/4041805/3251d212-0cde-44be-b3a5-68a0d3d434cf)
+![Screenshot 2024-05-03 165950](https://github.com/motherduckdb/duckdb-power-query-connector/assets/4041805/3251d212-0cde-44be-b3a5-68a0d3d434cf)
 
 5. This prompts Windows to restart.
 6. Next, open Power BI, click on "Options and settings" -> "Options" -> "Data Load" and click the "Clear cache" button.
 
 Now, you should be able to load your UTF-8 encoded database with Power BI directly:
 
-<img width="653" alt="image" src="https://github.com/MotherDuck-Open-Source/duckdb-power-query-connector/assets/4041805/bc83d199-317b-4142-a180-579a9b9d8a05">
+<img width="653" alt="image" src="https://github.com/motherduckdb/duckdb-power-query-connector/assets/4041805/bc83d199-317b-4142-a180-579a9b9d8a05">
 
 ## [Experimental] Power BI Service
 
@@ -119,9 +125,9 @@ Go to the "Log On" tab and click "Local System Account" and check "Allow service
 
 8. Enter your connection details. You can enter any local file name here, or use MotherDuck. If you do, make sure to enter a valid [MotherDuck token](https://app.motherduck.com/token-request?appName=powerbi).
 
-      > From version 0.1.7, the `motherduck_token` is a required parameter, in order to enable usage with Power BI Service. If you are using DuckDB, you can enter any value (e.g. `ducks`) into the MotherDuck token field.
+      > From version 0.1.7, the `motherduck_token` is a required parameter, in order to enable usage with Power BI Service. If you are using DuckDB, enter `localtoken` into the MotherDuck token field.
 
-      > If you are using MotherDuck, make sure that the MotherDuck extension is installed under `C:\WINDOWS\system32\config\systemprofile\.duckdb\extensions\`. To do so, you can download the [DuckDB CLI client for Windows](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=win&download_method=direct&architecture=x86_64), and run `INSTALL motherduck`. Then, you can copy over the extension files via PowerShell:
+      > If you are using MotherDuck, make sure that the MotherDuck extension is installed under `C:\WINDOWS\system32\config\systemprofile\.duckdb\extensions\`. To do so, you can download the [DuckDB CLI client for Windows](https://duckdb.org/install/), and run `INSTALL motherduck`. Then, you can copy over the extension files via PowerShell:
       ```
       cp -R '~\.duckdb\extensions\v1.2.0\' "C:\WINDOWS\system32\config\systemprofile\.duckdb\extensions\"
       ```
