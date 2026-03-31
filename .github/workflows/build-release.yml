@@ -29,4 +29,3 @@ jobs:
         run: |
           Write-Host "Build output:"
           Get-ChildItem -Recurse bin
-``
