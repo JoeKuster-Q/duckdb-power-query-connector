@@ -1,6 +1,11 @@
 name: Build DuckDB Power Query Connector
 
 on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -16,16 +21,51 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
       - name: Build Power Query Connector (.mez)
         shell: pwsh
         run: |
           Write-Host "Building DuckDB Power Query Connector..."
-          msbuild DuckDB.proj `
-            /p:Configuration=Release `
-            /p:Platform=AnyCPU
+          msbuild DuckDB.proj /p:Configuration=Release /p:Platform=AnyCPU
 
-      - name: List build output
+      - name: Validate .mez output
         shell: pwsh
         run: |
-          Write-Host "Build output:"
-          Get-ChildItem -Recurse bin
+          $mezPath = "bin\AnyCPU\Release\DuckDB.mez"
+          if (Test-Path $mezPath) {
+            Write-Host "Found connector: $mezPath"
+            Get-Item $mezPath | Format-List Name, Length, LastWriteTime
+          } else {
+            Write-Error ".mez file not found at $mezPath"
+            Write-Host "Build output contents:"
+            Get-ChildItem -Recurse bin -ErrorAction SilentlyContinue
+            exit 1
+          }
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DuckDB-PowerQuery-Connector
+          path: bin/AnyCPU/Release/DuckDB.mez
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: DuckDB-PowerQuery-Connector
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: DuckDB.mez
+          generate_release_notes: true
